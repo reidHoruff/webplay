@@ -1,0 +1,35 @@
+{% load url from future %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>{% block title %}webplay!{% endblock %}</title>
+		<link href="{{STATIC_URL}}bootstrap/css/bootstrap.css" rel="stylesheet">
+		<link href="{{STATIC_URL}}bootstrap/css/darkstrap.css" rel="stylesheet">
+
+		<style type="text/css">
+		body{
+		}
+
+		.control:hover{
+			opacity: 0.5;
+		}
+
+		.center{
+			text-align: center;
+		}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			{% block contained %}
+			{% endblock %}
+		</div>
+
+		{% block js %}
+		<script src="{{STATIC_URL}}bootstrap/js/jquery1.8.3.js"></script>
+		{% endblock %}
+	</body>
+</html>

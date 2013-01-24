@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block contained %}
+<div class="row" style="position:fixed; background:#2F2F2F; padding-top: 20px;">
+	<div class="span12">
+		<div class="well">
+			<div class="row">
+				<div class="span6">
+					<div id="controls" style="pull-left">
+						<a href="#" onclick="action_play();"><img class="control" src="{{STATIC_URL}}bootstrap/img/play.png"></a>
+						<a href="#" onclick="action_pause();"><img class="control" src="{{STATIC_URL}}bootstrap/img/pause.png"></a>
+						<a href="#" onclick="action_previous();"><img class="control" src="{{STATIC_URL}}bootstrap/img/previous.png"></a>
+						<a href="#" onclick="action_next();"><img class="control" src="{{STATIC_URL}}bootstrap/img/next.png"></a>
+						<a href="#" onclick="action_volume_down();"><img class="control" src="{{STATIC_URL}}bootstrap/img/audio-low.png"></a>
+						<span id="display-volume"></span>
+						<a href="#" onclick="action_volume_up();"><img class="control" src="{{STATIC_URL}}bootstrap/img/audio-high.png"></a>
+					</div>
+				</div>
+
+				<div class="span5">
+					<h3 id="now-playing-title"></h3>
+					<lable id="now-playing-artist"></lable><br>
+					<lable id="now-playing-album"></lable>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row" style="margin-top:150px;">
+	<div class="span12">
+		<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					{% if sort == 'sort_artist' %}
+						<th><a href="?sort=-sort_artist">Artist</a><i class="icon-chevron-down pull-right"></i></th>
+					{% elif sort == '-sort_artist' %}
+						<th><a href="?sort=sort_artist">Artist</a><i class="icon-chevron-up pull-right"></i></th>
+					{% else %}
+						<th><a href="?sort=sort_artist">Artist</a></th>
+					{% endif %}
+
+					{% if sort == 'sort_title' %}
+						<th><a href="?sort=-artist">Title</a><i class="icon-chevron-down pull-right"></i></th>
+					{% elif sort == '-sort_title' %}
+						<th><a href="?sort=sort_title">Title</a><i class="icon-chevron-up pull-right"></i></th>
+					{% else %}
+						<th><a href="?sort=sort_title">Title</a></th>
+					{% endif %}
+
+					{% if sort == 'sort_album' %}
+						<th><a href="?sort=-sort_album">Album</a><i class="icon-chevron-down pull-right"></i></th>
+					{% elif sort == '-sort_album' %}
+						<th><a href="?sort=sort_album">Album</a><i class="icon-chevron-up pull-right"></i></th>
+					{% else %}
+						<th><a href="?sort=sort_album">Album</a></th>
+					{% endif %}
+				</tr>
+			</thead>
+			<tbody>
+				{% for track in tracks %}
+				<tr onclick='play_track({{track.id}});'>
+					<td>{{track.artist}}</td>
+					<td>{{track.title}}</td>
+					<td>{{track.album}}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div><!--/span-->
+</div><!--/row-->
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+<script>
+
+$(function() {
+	var scroll_text;
+	var $elmt = $(this);
+	scroll_text = setInterval(function() {
+		scrollText($elmt);
+	}, 28);
+}, function() {
+	clearInterval(scroll_text);
+	$("#now-playing-title", this).css({
+		left: 0
+	});
+});
+
+var scrollText = function($elmt) {
+	var h1 = $("#now-playing-title", $elmt),
+	width = h1.width(),                
+	left = h1.position().left - 1;
+	left = -left > width ? width : left;
+	h1.css({
+		left: left
+	});
+};
+
+
+function update(data){
+	$('#now-playing-title').html(data['title']);
+	$('#now-playing-artist').html(data['artist']);
+	$('#now-playing-album').html(data['album']);
+	$('#display-volume').html(data['volume']);
+}
+
+function play_track(track_id){
+	console.log('play track', track_id);
+
+	$.ajax({
+		type: 'GET',
+		url: '{% url play_track %}',
+		data: 'track_id=' + track_id,
+		async: false,
+		success: function(obj){
+			if(obj['success']){
+				update(obj['data']);
+			}
+		}
+	});
+}
+
+function action_play(){
+	$.ajax({
+		type: 'GET',
+		url: '{% url action_play %}',
+		data: '',
+		async: false,
+		success: function(obj){
+			if(obj['success']){
+				update(obj['data']);
+			}
+		}
+	});
+}
+
+function action_pause(){
+	$.ajax({
+		type: 'GET',
+		url: '{% url action_pause %}',
+		data: '',
+		async: false,
+		success: function(obj){
+			if(obj['success']){
+				update(obj['data']);
+			}
+		}
+	});
+}
+
+function action_next(){
+	$.ajax({
+		type: 'GET',
+		url: '{% url action_next %}',
+		data: '',
+		async: false,
+		success: function(obj){
+			if(obj['success']){
+				update(obj['data']);
+			}
+		}
+	});
+}
+
+function action_previous(){
+	$.ajax({
+		type: 'GET',
+		url: '{% url action_previous %}',
+		data: '',
+		async: false,
+		success: function(obj){
+			if(obj['success']){
+				update(obj['data']);
+			}
+		}
+	});
+}
+
+function action_mute(){
+	$.ajax({
+		type: 'GET',
+		url: '{% url action_mute %}',
+		data: '',
+		async: false,
+		success: function(obj){
+			if(obj['success']){
+				update(obj['data']);
+			}
+		}
+	});
+}
+
+function action_volume_up(){
+	$.ajax({
+		type: 'GET',
+		url: '{% url action_volume_up %}',
+		data: '',
+		async: false,
+		success: function(obj){
+			if(obj['success']){
+				update(obj['data']);
+			}
+		}
+	});
+}
+
+function action_volume_down(){
+	$.ajax({
+		type: 'GET',
+		url: '{% url action_volume_down %}',
+		data: '',
+		async: false,
+		success: function(obj){
+			if(obj['success']){
+				update(obj['data']);
+			}
+		}
+	});
+}
+
+function update_info(){
+	$.ajax({
+		type: 'GET',
+		url: '{% url action_get_info %}',
+		data: '',
+		async: true,
+		success: function(obj){
+			if(obj['success']){
+				update(obj['data']);
+			}
+		}
+	});
+}
+
+var UPDATE_INTERVAL_S = 3;
+
+
+setInterval(update_info, UPDATE_INTERVAL_S*1000);
+
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block contained %}
+<div class="row">
+	<div class="span12 center">
+		<h1>Welcome to Webplay!</h1>
+		<p>This server is running at <strong>{{server_ip}}</strong> on <strong>{{server_name}}</strong></p>
+	</div>
+</div>
+
+<div class="row">
+	<div class="offset3 span6">
+		<h4>Enter password to control Rhythmbox on this PC</h4>
+		<form class="form form-inline" method="POST" action="/">
+			{% csrf_token %}
+			<input type="password" placeholder="password" name="password">
+			<input class="btn btn-primary" type="submit" value="login">
+		</form>
+	</div>
+</div>
+{% endblock %}
